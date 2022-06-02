@@ -7,21 +7,21 @@ module.exports = (req, res, next)=>{
     const [tokenType, tokenValue] = authorization.split(" ");
 
     if(tokenType !== "Bearer"){
-        res.status(400).send({
-            errorMessage:"로그인 후 사용하세요",
+        res.status(401).send({
+            errorMessage:"로그인이 필요합니다",
         });
         return;
     }
     try{
         const {userId} = jwt.verify(tokenValue,"my-secret-key");
 
-         User.findById(userId).exec().then((user)=>{
-            res.locals.uer=user;
+         User.findById(userId).then((user)=>{
+            res.locals.user=user;
             next();
         })
     }catch(err){
         res.status(401).send({
-            errorMessage: "로그인 후 사용하세요",
+            errorMessage: "로그인이 필요합니다",
         });
         return;
     }
